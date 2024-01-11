@@ -1,0 +1,149 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript Quiz</title>
+    <style>
+      /* Add some basic styling for better presentation */
+      .quiz-container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .question {
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .options {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .option {
+        margin-bottom: 5px;
+        cursor: pointer;
+      }
+
+      .correct {
+        color: lightgreen;
+      }
+
+      .incorrect {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="quiz-container">
+      <h1>JavaScript Quiz</h1>
+
+      <div class="question" id="question">Loading question...</div>
+
+      <ul class="options" id="options">
+        <!-- Options will be dynamically added here -->
+      </ul>
+
+      <button id="nextButton">Next Question</button>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questions = [
+          {
+            question: "What is the capital of France?",
+            options: ["Berlin", "Madrid", "Paris", "Rome"],
+            correctAnswer: "Paris",
+          },
+          {
+            question:
+              "Which programming language is often used for web development?",
+            options: ["Java", "Python", "JavaScript", "C#"],
+            correctAnswer: "JavaScript",
+          },
+          {
+            question: "What does HTML stand for?",
+            options: [
+              "HyperText Markup Language",
+              "High-level Text Markup Language",
+              "Hyper Transfer Markup Language",
+              "Hyper Transfer Text Language",
+            ],
+            correctAnswer: "HyperText Markup Language",
+          },
+        ];
+
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+        const nextButton = document.getElementById("nextButton");
+        //Hide nextButton
+        nextButton.style.display = "none";
+
+        function displayQuestion(index) {
+          const currentQuestion = questions[index];
+          questionElement.textContent = currentQuestion.question;
+
+          optionsElement.innerHTML = ""; // Clear previous options
+
+          currentQuestion.options.forEach((option, i) => {
+            const li = document.createElement("li");
+            li.classList.add("option");
+            li.textContent = option;
+            li.addEventListener("click", () => checkAnswer(i));
+            optionsElement.appendChild(li);
+            nextButton.style.display = "none";
+          });
+        }
+
+        function checkAnswer(selectedIndex) {
+          const currentQuestion = questions[currentQuestionIndex];
+          const selectedOption = currentQuestion.options[selectedIndex];
+
+          if (selectedOption === currentQuestion.correctAnswer) {
+            optionsElement.children[selectedIndex].classList.add("correct");
+            // Increment the score for correct answers
+            score++;
+            console.log(score);
+          } else {
+            optionsElement.children[selectedIndex].classList.add("incorrect");
+            optionsElement.children[
+              currentQuestion.options.indexOf(currentQuestion.correctAnswer)
+            ].classList.add("correct");
+          }
+          // Show nextButton
+          nextButton.style.display = "block";
+        }
+
+        function nextQuestion() {
+          currentQuestionIndex++;
+          if (currentQuestionIndex < questions.length) {
+            displayQuestion(currentQuestionIndex);
+            resetOptionsStyles();
+          } else {
+            questionElement.textContent = `Quiz completed! Your score: ${score} out of ${questions.length}`;
+            optionsElement.innerHTML = "";
+            nextButton.style.display = "none";
+          }
+        }
+
+        function resetOptionsStyles() {
+          for (let i = 0; i < optionsElement.children.length; i++) {
+            optionsElement.children[i].classList.remove("correct", "incorrect");
+          }
+        }
+
+        // Initial display
+        displayQuestion(currentQuestionIndex);
+
+        // Add click event listener to the next button
+        nextButton.addEventListener("click", nextQuestion);
+      });
+    </script>
+  </body>
+</html>
